@@ -101,14 +101,23 @@ Zahvaljujem se vam za pozornost in z veseljem odgovorim na vaša vprašanja.
 * **Rešitev:** Uporaba popularnih filmov ali vprašalnik ob registraciji.
 
 ---
+### Poglobljena interpretacija grafov
 
-### Interpretacija grafov
+#### Slika 1: RMSE (SVD vs. Izhodišča)
+* **Interpretacija:** Izhodišča so povprečje, SVD modelira specifičen okus.
+* **Inženirski argument:** "Razlika v RMSE dokazuje, da SVD ni le 'statistično povprečje', temveč uspešno modelira specifične odklone uporabnika."
 
-* **Slika 1 (RMSE SVD vs Izhodišča):** Modri stolpec (SVD) je najnižji = SVD se dejansko uči vzorcev, ne le povprečij.
-* **Slika 2 (RMSE vs k):** Napaka je najnižja pri $k=10$. Višji $k$ vodi v *overfitting*.
-* **Slika 3 (RMSE vs uporabniki):** Več podatkov = manjša napaka (sistem je stabilen).
-* **Slika 4 (Preciznost pri 10):** SVD "izgubi" proti priljubljenosti. **Razlaga:** Ni napaka modela, ampak lastnost metrike, saj je testna množica pristranska do priljubljenosti.
+#### Slika 2: RMSE v odvisnosti od k
+* **Interpretacija:** Pri nizkem k imamo underfitting, pri previsokem k overfitting.
+* **Inženirski argument:** "Optimalni k=10 je točka, kjer model najbolje posplošuje na nove podatke."
+
+#### Slika 3: Učna krivulja (RMSE vs. velikost zbirke)
+* **Interpretacija:** Več uporabnikov = manjša negotovost.
+* **Inženirski argument:** "Krivulja kaže, da je SVD robusten. Sistem že s to zbirko doseže stabilnost."
+
+#### Slika 4: Preciznost pri 10 (SVD vs. Priljubljenost)
+* **Interpretacija:** Priljubljenost igra na varno, SVD optimizira personalizacijo.
+* **Inženirski argument:** "Če SVD zgreši pri priljubljenih filmih, to pomeni, da je bolj ambiciozen – poskuša odkriti manj znane bisere, kar je dejanski cilj personalizacije."
 
 ---
-
-*Nasvet za zagovor: Če te vprašajo o matematiki, reci: "Model s pomočjo optimizacijskega algoritma (npr. SGD - Stochastic Gradient Descent) iterativno popravlja vrednosti vektorjev tako dolgo, dokler se napovedane ocene ne približajo dejanskim ocenam iz učne množice."*
+*Nasvet za zagovor: Če te vprašajo o matematiki, reci: "Model s pomočjo optimizacijskega algoritma iterativno popravlja vrednosti vektorjev tako dolgo, dokler se napovedane ocene ne približajo dejanskim ocenam iz učne množice."*
