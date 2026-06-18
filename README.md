@@ -1,129 +1,114 @@
-# Movie Recommender (Matrix Factorization + Content-Based + Hybrid)
+# Scenarij za zagovor: Priporočilni sistem za filme
 
-A movie recommender built to explore **how recommendation systems (YouTube,
-Netflix, …) actually work**, on the MovieLens `ml-latest-small` dataset
-(~100k ratings, 610 users, ~9.7k movies). It implements the three building
-blocks real systems combine:
+## 1. Naslovnica
+**Govoriš:**
+Pozdravljeni. Sem Miha Gradišar in danes vam bom predstavil svojo seminarsko nalogo, v kateri sem zgradil priporočilni sistem za filme. Zanimalo me je, kako dejansko delujejo sistemi, ki nam vsak dan predlagajo vsebino na spletu, zato sem se odločil, da tak sistem zgradim sam in pogledam pod pokrov.
 
-1. **Collaborative filtering** (`main.py`, `surprise.SVD`) — *"people whose
-   ratings resemble yours also liked this."* Matrix factorization: learns
-   `R ≈ P · Qᵀ`, a `k`-dim latent vector per user and per movie via regularized
-   SGD. The core of the project; trained once on a static snapshot. **Genre-blind.**
-2. **Content-based** (`content.py`) — *"this is similar to what you liked."*
-   TF-IDF–weighted genre vectors; recommends by cosine similarity to a profile
-   built from the user's liked movies. **Genre-coherent, but quality-blind.**
-3. **Hybrid** — blends the two (min-max normalize each, then
-   `α·rating + (1−α)·genre`). What real systems actually do. **Both genre-aware
-   and quality-aware.**
+**Kako:** Začni mirno, brez hitenja. Naredi kratek pogled po komisiji, preden nadaljuješ na naslednji diapozitiv.
 
-## Setup
+## 2. Motivacija
+**Govoriš:**
+Priporočilni sistemi so danes skoraj povsod. YouTube nam izbere naslednji video, Netflix postavi v vrsto naslednjo serijo, spletna trgovina ugiba, kaj bi kupili. Ves čas me je zanimalo, po kakšnem ključu se program odloči, kaj naj komu pokaže. Namesto da bi o tem samo bral, sem hotel te gradnike zgraditi in razstaviti na koščke.
 
-`scikit-surprise` is a Cython package with **no wheels for Python 3.14**, so the
-project uses **Python 3.12** in a virtual environment. Nothing is installed globally.
+**Kako:** Povej z malo radovednosti v glasu. Po vprašanju o ključu naredi kratek premor za dramatičen učinek.
 
-```bash
-python3.12 -m venv .venv
-source .venv/bin/activate          # or call .venv/bin/python directly
-pip install -r requirements.txt
-```
+## 3. Cilj in trije pristopi
+**Govoriš:**
+Cilj naloge ni bil zgraditi le enega modela, temveč razumeti celotno sliko. Zato sem zgradil in primerjal tri pristope. Prvi je sodelovalno filtriranje z matrično faktorizacijo, ki predstavlja jedro naloge. Drugi je vsebinski model, ki priporoča izključno po žanrih. Tretji pa je hibridni model, ki oba združi in se najbolj približa temu, kar v resnici uporabljajo velika podjetja.
 
-## Usage
+**Kako:** Naštej tri pristope jasno in razločno. Pri vsakem lahko s prsti nakažeš številko.
 
-```bash
-python main.py --rating-id 612          # collaborative (rating-based) top-10
-python main.py --genre-id 612           # content-based (genre) top-10
-python main.py --hybrid-id 612 --alpha 0.5   # hybrid blend (α: 1=rating, 0=genre)
-python main.py --personas               # collaborative vs content-based, every persona
-python main.py --experiments            # run experiments, write figures/ + results.txt
-python main.py --search "blade runner"  # find movieIds by title substring
-```
+## 4. Podatki
+**Govoriš:**
+Uporabil sem javno zbirko podatkov MovieLens, ki vsebuje približno sto tisoč ocen. Zbral jih je nekaj čez šeststo uporabnikov na skoraj deset tisoč filmih. Izvirnih podatkov nisem spreminjal. Sem pa v zbirko ročno dodal pet umetnih uporabnikov z namerno ozkim in izrazitim okusom. Eden na primer gleda izključno akcijske filme. To sem naredil zato, da vnaprej vem, kaj bi moral model priporočiti, in da takoj vidim razlike v obnašanju sistemov.
 
-The three single-user flags let you compare the models on the same user:
-`--rating-id` returns genre-blind acclaimed films, `--genre-id` returns on-genre
-(but obscure) films, `--hybrid-id` returns on-genre *and* well-regarded films.
+**Kako:** Ohranjaj enakomeren tempo. Poudari, da so dodani uporabniki umetni in zakaj si jih dodal – to kaže na tvoj premišljen inženirski pristop.
 
-## Data
+## 5. Sodelovalno filtriranje (Tehnično jedro)
+**Govoriš:**
+Osrednji model je matrična faktorizacija, natančneje algoritem SVD. Ta model vsakemu uporabniku in filmu pripiše kratek vektor latentnih faktorjev. Te faktorje si lahko predstavljamo kot skrite poteze okusa – na primer nagnjenost k akciji ali drami – ki si jih model izmisli in prilagodi povsem sam. Napovedano oceno za film nato izračunamo kot skalarni produkt teh dveh vektorjev. Model se vektorjev nauči tako, da poskuša zmanjšati napako pri ocenah, ki jih že poznamo.
 
-`ml-latest-small/` holds the untouched GroupLens dataset. **`ratings.csv` and
-`movies.csv` are never modified** (only `ratings` and the `genres`/`title`
-columns of `movies` are used; `tags.csv`/`links.csv` are unused). Custom users
-live in `my_ratings.csv` (`userId,movieId,rating`, rows may carry a trailing
-`# Title` comment) and are concatenated in code before training — keeping the
-dataset reproducible and custom users separate.
+**Kako:** To je najbolj tehničen del. Upočasni. Ob omembi skalarnega produkta pokaži, da razumeš – to ni le ugibanje, ampak matematika (množenje vektorja uporabnika z vektorjem filma).
 
-`my_ratings.csv` ships with five **demonstration personas** (userIds 611–615),
-each shaped around a deliberate taste so the output is predictable:
+## 6. Vrednotenje
+**Govoriš:**
+Za objektivno primerjavo sem podatke razdelil na učno in testno množico. Uporabil sem dve meri. Glavna je RMSE, torej koren povprečne kvadratne napake, ki meri, za koliko se napovedana ocena v povprečju zgreši od dejanske. Tukaj je nižja vrednost boljša. Druga mera pa je preciznost pri 10. Ta nam pove, koliko od prvih desetih priporočenih filmov je uporabnik dejansko ocenil z vsaj štirimi zvezdicami.
 
-| user | persona | expectation |
-|------|---------|-------------|
-| 611 | cerebral / arthouse | dark, intelligent films |
-| 612 | action junkie | action / blockbuster |
-| 613 | animation / family | Pixar / Disney / Ghibli |
-| 614 | horror fan | horror |
-| 615 | "all over the place" | mixed genres, no clear signal |
+**Kako:** Kratko in stvarno. Pomembno je, da točno veš, kaj pomeni kratica RMSE.
 
-## Evaluation (collaborative model)
+## 7. Napoved ocen (Prvi rezultati)
+**Govoriš:**
+Poglejmo rezultate. Pri napovedi ocen je matrična faktorizacija brez težav premagala preprosta izhodišča. Dosegla je napako 0,877, medtem ko je najmočnejše izhodišče – to je golo povprečje uporabnika – doseglo 0,943. Razlika je približno sedemodstotna. S tem sem dokazal, da se model iz podatkov nauči dejanskih vzorcev in strukture okusa, ne le ugibanja povprečij.
 
-A **per-user hold-out split** (20% of each user's ratings, users with ≥5
-ratings, fixed seed) feeds two metrics:
+**Kako:** Pokaži na graf. Govori samozavestno, saj gre za uspešen rezultat tvojega modela.
 
-- **RMSE (headline):** SVD vs mean-based baselines that can also predict ratings.
-- **precision@10 (secondary):** SVD vs a popularity baseline; relevant = rated ≥ 4.0,
-  averaged over users with ≥1 relevant held-out item, candidates filtered to
-  movies with ≥10 ratings.
+## 8. Presenetljiv obrat pri razvrščanju
+**Govoriš:**
+Nato pa me je pričakalo presenečenje. Pri razvrščanju najboljših desetih priporočil je moj napredni model izgubil. Premagalo ga je najpreprostejše izhodišče, ki vsem ponudi samo najbolj priljubljene filme. Sprva je to delovalo kot napaka, a razlog tiči v sami zasnovi mere. Ko ocene za test izločamo naključno, najbolj ocenjevani filmi pogosteje pristanejo v testni množici. Sistem, ki priporoča priljubljenost, zato zmaga skoraj sam od sebe. Model SVD pa meri osebno kakovost, kar sta dve različni stvari.
 
-| # | Experiment | Result |
-|---|------------|--------|
-| 1 | **RMSE vs baselines** | SVD **~0.88** beats user-mean ~0.94, item-mean ~0.97, global-mean ~1.05 |
-| 1 | **precision@10 vs popularity** | SVD **loses** to popularity (see note) |
-| 2 | **k-sweep (RMSE vs k)** | best around **k=20**; rises by k=100 — under/overfit tradeoff |
-| 3 | **Learning curve (RMSE vs #users)** | RMSE falls as users grow — more data, better predictions |
+**Kako:** To je zanimiv in zrel obrat. Pokaži, da razumeš problematiko pristranskosti podatkov. Ne zveni razočarano, ampak analitično.
 
-Figures (labels in **Slovene**) land in `figures/`: `rmse_comparison.png`,
-`k_sweep.png`, `learning_curve.png`, `precision_comparison.png`. The same run
-writes the numbers to `results.txt`. (Exact values depend on how many personas
-are in `my_ratings.csv`, since they are merged into training.)
+## 9. Žanrska slepota
+**Govoriš:**
+Drugo veliko odkritje se je pokazalo pri testiranju z umetnimi uporabniki. Uporabniku, ki je ocenil izključno akcijske filme, je sodelovalno filtriranje vrnilo filme, kot sta Fight Club in The Shawshank Redemption. To so sicer odlični filmi, a niso akcija. Razlog je v tem, da ta model dejansko nikoli ne prebere žanra. Uči se le iz matrike, kdo je kaj ocenil. Ker pa na majhni zbirki prevladujejo splošno priljubljeni filmi, te povozijo žanr. Model je torej žanrsko slep.
 
-### Why the collaborative model "loses" on precision@10
+**Kako:** Upočasni. Po "niso akcija" naredi kratek premor. Ta diapozitiv kaže tvoje globoko razumevanje omejitev posameznih algoritmov.
 
-A known result, not a bug. Random per-user hold-out makes *popular* movies
-disproportionately likely to land in the test set, so always recommending
-popular movies scores well on top-N precision. SVD ranks by predicted *rating*
-(quality), a different signal than *which movies a user engages with*
-(popularity). A minimum-support filter barely moved it — confirming the cause is
-the metric's popularity bias. Hence RMSE (what SVD optimizes) is the honest
-headline metric.
+## 10. Hibrid kot rešitev
+**Govoriš:**
+To pomanjkljivost rešuje vsebinski model, ki bere samo žanre. Vendar ta nima občutka za splošno kakovost, zato vrača precej neznane naslove. Zato sem zgradil hibridni model, ki ocene obeh združi z utežjo. Šele ta je akcijskemu uporabniku predlagal filme, ki so akcijski in hkrati visoko cenjeni, na primer The Road Warrior in Goldfinger. To dokazuje, da se resnični sistemi ne zanašajo le na en sam algoritem, temveč kombinirajo njihove prednosti.
 
-### What the three models reveal
+**Kako:** Razreši napetost. Sklepni, samozavesten in inženirski ton.
 
-- **Collaborative** predicts ratings well (wins RMSE) but is **genre-blind** —
-  the action persona does *not* get action back, because CF never reads genres.
-- **Content-based** is **genre-coherent** (action→action) but **quality-blind**,
-  surfacing obscure single-genre films.
-- **Hybrid** combines them: action films that are also well-regarded. Sweeping
-  `--alpha` visibly shifts recommendations from genre-forward to acclaimed-forward.
+## 11. Omejitve in realnost
+**Govoriš:**
+Pomembno se je zavedati tudi omejitev. Prva je problem hladnega zagona – nov uporabnik ali film brez ocen nima ustvarjenega vektorja, zato mu sistem ne more napovedati ničesar. Druga je majhnost zbirke podatkov, zaradi katere priljubljenost prehitro preglasi osebni okus. Tretja pa je, da se ta model uči na zamrznjenih podatkih, medtem ko se Netflix ali YouTube učita sproti in dinamično.
 
-## Limitations
+**Kako:** Govori stvarno in pošteno. Priznavanje omejitev je znak zrelega inženirja in preprečuje neprijetna vprašanja komisije.
 
-- **Cold start:** a user/movie absent from training has no latent vector and no
-  fallback (`--rating-id` for an unknown user prints a cold-start message).
-- **Static snapshot:** trains once; production systems retrain for concept drift.
-- **Small dataset:** on `ml-latest-small` the latent factors are dominated by
-  overall popularity rather than genre — larger data would carry more taste structure.
-- **Classical by design:** matrix factorization + TF-IDF, no neural net / GPU.
+## 12. Zaključek
+**Govoriš:**
+Glavni vtis te naloge je, da za dobrimi priporočili ne stoji en sam super pameten algoritem, ampak več preprostih, ki se vsak po svoje zmotijo, skupaj pa se odlično dopolnijo. Sodelovalno filtriranje dobro ujame kakovost, a je slepo za žanr; vsebinski model vidi žanr, a ne pozna kakovosti. Hibrid pa uskladi oboje. Najbolj me sedaj zanima, kako daleč bi prišel hibrid na masovni zbirki podatkov.
+Zahvaljujem se vam za pozornost in z veseljem odgovorim na vaša vprašanja.
 
-## Layout
+**Kako:** Umirjen zaključek. Pri zadnjem stavku ohrani očesni stik s komisijo, se rahlo nasmehni in počakaj na vprašanja.
 
-```
-movie-recommender/
-├── ml-latest-small/   # untouched dataset
-├── my_ratings.csv     # custom users / personas (separate from the dataset)
-├── main.py            # data, split, SVD, evaluation, hybrid, CLI
-├── content.py         # content-based (genre) recommender
-├── plots.py           # figure generation (matplotlib, Agg, Slovene labels)
-├── figures/           # generated report figures
-├── results.txt        # generated metrics
-├── REPORT_NOTES.md    # writeup material (numbers + rationale)
-├── requirements.txt
-└── README.md
-```
+---
+
+# Tehnična priloga: Koncepti in razlaga grafov
+
+### 1. Matrična faktorizacija (Matrix Factorization)
+* **Koncept:** Ogromna matrika (uporabniki x filmi) z ocenami, kjer je večina celic praznih.
+* **Algoritem (SVD):** Razbije redko (sparse) matriko na dve manjši matriki.
+* **Latentni faktorji:** Skrite lastnosti (npr. "stopnja akcije"), ki jih model sam odkrije.
+[Image of matrix factorization for recommender systems]
+
+### 2. Skalarni produkt (Dot Product)
+* **Razumevanje:** Napoved ocene = skalarni produkt vektorja uporabnika in vektorja filma. Če se ujemata (oba imata visoko vrednost za akcijo), je napoved visoka.
+
+### 3. Evalvacijske metrike
+* **RMSE:** Meri natančnost ocene (za koliko se model zmoti). Nižje je bolje.
+* **Preciznost pri 10:** Ali je med prvimi desetimi filmi vsaj kakšen, ki je uporabniku res všeč (> 4 zvezdice).
+
+### 4. Hibridni sistemi
+* **Sodelovalno filtriranje:** "Ljudje so gledali to..." (Kakovost, a žanrsko slepo).
+* **Vsebinski model:** "Gledal si akcijo, zato ti priporočam akcijo..." (Natančnost žanra, a slaba kakovost).
+* **Hibrid:** Združitev obeh za izkoristek prednosti.
+[Image of hybrid recommender system architecture]
+
+### 5. Problem hladnega zagona (Cold Start)
+* **Razumevanje:** Kaj ko pride nov uporabnik? Ni podatkov za vektor.
+* **Rešitev:** Uporaba popularnih filmov ali vprašalnik ob registraciji.
+
+---
+
+### Interpretacija grafov
+
+* **Slika 1 (RMSE SVD vs Izhodišča):** Modri stolpec (SVD) je najnižji = SVD se dejansko uči vzorcev, ne le povprečij.
+* **Slika 2 (RMSE vs k):** Napaka je najnižja pri $k=10$. Višji $k$ vodi v *overfitting*.
+* **Slika 3 (RMSE vs uporabniki):** Več podatkov = manjša napaka (sistem je stabilen).
+* **Slika 4 (Preciznost pri 10):** SVD "izgubi" proti priljubljenosti. **Razlaga:** Ni napaka modela, ampak lastnost metrike, saj je testna množica pristranska do priljubljenosti.
+
+---
+
+*Nasvet za zagovor: Če te vprašajo o matematiki, reci: "Model s pomočjo optimizacijskega algoritma (npr. SGD - Stochastic Gradient Descent) iterativno popravlja vrednosti vektorjev tako dolgo, dokler se napovedane ocene ne približajo dejanskim ocenam iz učne množice."*
