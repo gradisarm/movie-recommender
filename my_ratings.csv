@@ -1,0 +1,108 @@
+userId,movieId,rating
+# ============================================================================
+# Demonstration personas (custom users), each with a deliberately shaped taste
+# and ~18 ratings (per the 15-20 guideline, so the latent vector is constrained,
+# not an underdetermined guess). Real MovieLens users are 1-610.
+# pandas ignores everything after '#', so the trailing notes are just for humans.
+# ============================================================================
+
+# --- 611: CEREBRAL / ARTHOUSE -- expect dark, intelligent, acclaimed films ---
+611,541,5.0    # Blade Runner (1982) [Sci-Fi|Thriller]
+611,924,4.5    # 2001: A Space Odyssey (1968) [Sci-Fi|Drama]
+611,7361,5.0   # Eternal Sunshine of the Spotless Mind (2004) [Sci-Fi|Romance|Drama]
+611,48774,4.5  # Children of Men (2006) [Sci-Fi|Thriller]
+611,47,5.0     # Se7en (1995) [Mystery|Thriller]
+611,55820,4.5  # No Country for Old Men (2007) [Crime|Drama]
+611,4226,5.0   # Memento (2000) [Mystery|Thriller]
+611,104879,4.0 # Prisoners (2013) [Drama|Mystery|Thriller]
+611,48394,4.5  # Pan's Labyrinth (2006) [Fantasy|Drama]
+611,6016,5.0   # City of God (2002) [Crime|Drama]
+611,56782,4.0  # There Will Be Blood (2007) [Drama|Western]
+611,5618,5.0   # Spirited Away (2001) [Animation|Fantasy]
+611,60069,4.5  # WALL-E (2008) [Animation|Sci-Fi]
+611,109374,4.0 # The Grand Budapest Hotel (2014) [Comedy|Drama]
+611,57669,4.5  # In Bruges (2008) [Comedy|Crime|Drama]
+611,608,4.0    # Fargo (1996) [Comedy|Crime|Drama]
+611,53996,1.0  # Transformers (2007) [Action|Sci-Fi]   (dislike)
+611,63992,0.5  # Twilight (2008) [Fantasy|Romance]      (dislike)
+611,53125,1.5  # Pirates of the Caribbean: At World's End (2007)  (dislike)
+
+# --- 612: ACTION JUNKIE -- expect action / blockbuster recs ---
+612,1036,5.0   # Die Hard (1988) [Action|Crime|Thriller]
+612,589,5.0    # Terminator 2: Judgment Day (1991) [Action|Sci-Fi]
+612,122882,4.5 # Mad Max: Fury Road (2015) [Action|Adventure|Sci-Fi]
+612,58559,5.0  # The Dark Knight (2008) [Action|Crime|Drama]
+612,115149,4.5 # John Wick (2014) [Action|Thriller]
+612,3578,4.5   # Gladiator (2000) [Action|Adventure|Drama]
+612,89745,4.0  # The Avengers (2012) [Action|Adventure|Sci-Fi]
+612,2571,5.0   # The Matrix (1999) [Action|Sci-Fi|Thriller]
+612,1200,5.0   # Aliens (1986) [Action|Adventure|Horror|Sci-Fi]
+612,1198,5.0   # Raiders of the Lost Ark (1981) [Action|Adventure]
+612,377,4.0    # Speed (1994) [Action|Thriller]
+612,5418,4.5   # The Bourne Identity (2002) [Action|Mystery|Thriller]
+612,2000,4.0   # Lethal Weapon (1987) [Action|Comedy|Crime]
+612,3527,4.5   # Predator (1987) [Action|Sci-Fi|Thriller]
+612,49272,4.5  # Casino Royale (2006) [Action|Adventure|Thriller]
+612,6874,4.5   # Kill Bill: Vol. 1 (2003) [Action|Crime|Thriller]
+612,6,4.5      # Heat (1995) [Action|Crime|Thriller]
+612,733,4.0    # The Rock (1996) [Action|Adventure|Thriller]
+
+# --- 613: ANIMATION / FAMILY FAN -- expect Pixar / Disney / Ghibli recs ---
+613,1,5.0      # Toy Story (1995) [Animation|Children]
+613,6377,4.5   # Finding Nemo (2003) [Animation|Children]
+613,364,5.0    # The Lion King (1994) [Animation|Children|Musical]
+613,4306,4.0   # Shrek (2001) [Animation|Children|Comedy]
+613,68954,4.5  # Up (2009) [Animation|Children|Adventure]
+613,5618,5.0   # Spirited Away (2001) [Animation|Fantasy]
+613,60069,5.0  # WALL-E (2008) [Animation|Sci-Fi]
+613,8961,4.5   # The Incredibles (2004) [Animation|Action|Children]
+613,4886,4.5   # Monsters, Inc. (2001) [Animation|Children|Comedy]
+613,50872,4.5  # Ratatouille (2007) [Animation|Children|Drama]
+613,595,4.5    # Beauty and the Beast (1991) [Animation|Children|Musical]
+613,588,4.5    # Aladdin (1992) [Animation|Children|Comedy|Musical]
+613,3114,4.5   # Toy Story 2 (1999) [Animation|Children|Comedy]
+613,3000,5.0   # Princess Mononoke (1997) [Animation|Adventure|Fantasy]
+613,76093,4.5  # How to Train Your Dragon (2010) [Animation|Children|Fantasy]
+613,59784,4.0  # Kung Fu Panda (2008) [Animation|Children|Comedy]
+613,79091,4.0  # Despicable Me (2010) [Animation|Children|Comedy]
+613,134853,4.5 # Inside Out (2015) [Animation|Children|Comedy|Drama]
+
+# --- 614: HORROR FAN -- expect horror recs ---
+614,1258,5.0   # The Shining (1980) [Horror]
+614,1214,5.0   # Alien (1979) [Horror|Sci-Fi]
+614,1997,4.5   # The Exorcist (1973) [Horror|Mystery]
+614,1982,4.0   # Halloween (1978) [Horror]
+614,2288,4.5   # The Thing (1982) [Horror|Sci-Fi]
+614,1347,4.0   # A Nightmare on Elm Street (1984) [Horror|Thriller]
+614,1407,4.0   # Scream (1996) [Horror|Comedy|Mystery]
+614,8874,4.5   # Shaun of the Dead (2004) [Horror|Comedy]
+614,593,5.0    # The Silence of the Lambs (1991) [Crime|Horror|Thriller]
+614,1219,5.0   # Psycho (1960) [Crime|Horror]
+614,1387,4.5   # Jaws (1975) [Action|Horror]
+614,2459,4.0   # The Texas Chainsaw Massacre (1974) [Horror]
+614,968,4.5    # Night of the Living Dead (1968) [Horror|Sci-Fi]
+614,2160,4.5   # Rosemary's Baby (1968) [Drama|Horror|Thriller]
+614,4105,4.0   # The Evil Dead (1981) [Fantasy|Horror|Thriller]
+614,6502,4.5   # 28 Days Later (2002) [Action|Horror|Sci-Fi]
+614,5679,4.0   # The Ring (2002) [Horror|Mystery|Thriller]
+614,8957,4.0   # Saw (2004) [Horror|Mystery|Thriller]
+
+# --- 615: ALL OVER THE PLACE -- mixed genres AND ratings, no clear signal ---
+615,1,4.0      # Toy Story (1995) [Animation|Children]
+615,1036,5.0   # Die Hard (1988) [Action|Crime|Thriller]
+615,8533,2.0   # The Notebook (2004) [Drama|Romance]   (dislike)
+615,1997,4.0   # The Exorcist (1973) [Horror|Mystery]
+615,296,5.0    # Pulp Fiction (1994) [Crime|Drama]
+615,1230,3.0   # Annie Hall (1977) [Comedy|Romance]
+615,924,4.0    # 2001: A Space Odyssey (1968) [Sci-Fi|Drama]
+615,1721,2.5   # Titanic (1997) [Drama|Romance]   (lukewarm)
+615,858,5.0    # The Godfather (1972) [Crime|Drama]
+615,356,3.5    # Forrest Gump (1994) [Comedy|Drama|Romance]
+615,69122,2.0  # The Hangover (2009) [Comedy|Crime]   (dislike)
+615,260,4.0    # Star Wars: A New Hope (1977) [Action|Adventure|Sci-Fi]
+615,480,4.0    # Jurassic Park (1993) [Action|Adventure|Sci-Fi]
+615,318,4.5    # The Shawshank Redemption (1994) [Crime|Drama]
+615,72998,3.0  # Avatar (2009) [Action|Adventure|Sci-Fi]
+615,4993,4.0   # LOTR: Fellowship of the Ring (2001) [Adventure|Fantasy]
+615,7451,1.5   # Mean Girls (2004) [Comedy]   (dislike)
+615,3578,3.5   # Gladiator (2000) [Action|Adventure|Drama]

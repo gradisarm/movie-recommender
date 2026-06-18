@@ -1,0 +1,15 @@
+Split: 80743 train / 20184 test ratings (615 users, seed=42)
+[Exp 1a] RMSE  global-mean=1.0447  user-mean=0.9431  item-mean=0.9723  SVD (k=50)=0.8768
+[Exp 1b] precision@10 over 607 users: SVD=0.0554  popularity=0.1193  (popularity wins on top-N)
+[Exp 2] k=  2  RMSE=0.8763
+[Exp 2] k=  5  RMSE=0.8760
+[Exp 2] k= 10  RMSE=0.8756
+[Exp 2] k= 20  RMSE=0.8759
+[Exp 2] k= 50  RMSE=0.8768
+[Exp 2] k=100  RMSE=0.8772
+[Exp 2] best k = 10 (lowest RMSE)
+[Exp 3] train users=100  RMSE=0.9451
+[Exp 3] train users=229  RMSE=0.9289
+[Exp 3] train users=358  RMSE=0.9295
+[Exp 3] train users=486  RMSE=0.9169
+[Exp 3] train users=615  RMSE=0.9102
